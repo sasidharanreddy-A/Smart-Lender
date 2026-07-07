@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prediction Result — Smart Lender</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-cosmic"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+        <i class="bi bi-bank2 me-1"></i> Smart Lender
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('index') }}">Predict</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('eda') }}">EDA</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('retrain') }}">Training</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('about') }}">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    {% set approved = result.status == 'Approved' %}
+
+    <!-- Status Card with Confetti -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg status-card {{ 'status-approved' if approved else 'status-rejected' }} fade-in">
+          {% if approved %}
+          <div class="confetti-container">
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+            <div class="confetti-piece"></div>
+          </div>
+          {% endif %}
+          <div class="card-body text-center text-white py-5">
+            <div class="status-icon mb-3">
+              {% if approved %}
+                <i class="bi bi-patch-check-fill"></i>
+              {% else %}
+                <i class="bi bi-slash-circle-fill"></i>
+              {% endif %}
+            </div>
+            <h1 class="display-4 fw-bold mb-2">
+              {% if approved %}Loan Approved{% else %}Loan Rejected{% endif %}
+            </h1>
+            <p class="mb-2 opacity-75 fs-5">
+              Applicant Status: <strong>{{ result.status }}</strong>
+            </p>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+              <span class="badge badge-glass py-2 px-3">
+                <i class="bi bi-cpu me-1"></i> Model: {{ result.model_name }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Row -->
+    <div class="row g-3 mt-2 justify-content-center">
+      <div class="col-md-4 col-lg-3">
+        <div class="metric-card text-center p-4 h-100 fade-in delay-1">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(6,182,212,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <i class="bi bi-percent fs-4" style="color: #22d3ee;"></i>
+          </div>
+          <div class="metric-value mt-2 counter">{{ result.probability }}%</div>
+          <p class="metric-label mb-0">Approval Probability</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <div class="metric-card text-center p-4 h-100 fade-in delay-2">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <i class="bi bi-shield-check fs-4" style="color: #34d399;"></i>
+          </div>
+          <div class="metric-value mt-2 counter">{{ result.confidence }}%</div>
+          <p class="metric-label mb-0">Confidence Score</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <div class="metric-card text-center p-4 h-100 fade-in delay-3">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(245,158,11,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+            <i class="bi bi-clipboard-check fs-4" style="color: #fbbf24;"></i>
+          </div>
+          <div class="metric-value mt-2 counter">{{ result.status }}</div>
+          <p class="metric-label mb-0">Model Decision</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-8">
+        <div class="card shadow-lg fade-in delay-2">
+          <div class="card-header-gradient text-white d-flex align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-lightbulb" style="color: #fbbf24;"></i>
+              </div>
+              <h2 class="h6 mb-0 fw-bold">Recommendation</h2>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex gap-3">
+              <div style="font-size: 2rem; opacity: 0.5;">&ldquo;</div>
+              <p class="mb-0" style="color: var(--teal-light); font-size: 1.05rem; line-height: 1.7; flex: 1;">
+                {{ result.recommendation }}
+              </p>
+            </div>
+
+            <hr class="glow-divider my-3" />
+
+            <div class="row g-2 small">
+              <div class="col-sm-4">
+                <div class="step-indicator">
+                  <i class="bi bi-cash-coin" style="color: var(--emerald);"></i>
+                  <span style="color: var(--text-muted);">Income:</span>
+                  <strong>₹{{ result.income }}</strong>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="step-indicator">
+                  <i class="bi bi-bank" style="color: var(--teal);"></i>
+                  <span style="color: var(--text-muted);">Loan:</span>
+                  <strong>₹{{ result.loan }}k</strong>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="step-indicator">
+                  <i class="bi bi-credit-card" style="color: var(--amber);"></i>
+                  <span style="color: var(--text-muted);">Credit:</span>
+                  <strong>{{ result.credit_history }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-8">
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{{ url_for('index') }}" class="btn btn-gradient btn-lg px-5 py-3">
+            <i class="bi bi-arrow-repeat me-2"></i> Evaluate Another Applicant
+          </a>
+          <a href="{{ url_for('eda') }}" class="btn btn-glass btn-lg px-4 py-3">
+            <i class="bi bi-bar-chart-line me-2"></i> View EDA Insights
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center text-white-50 small mt-5 pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+      Predictions are model-based estimates for decision support only and do not
+      constitute financial advice.
+      {% if result.model_name %}&middot; Model: {{ result.model_name }}{% endif %}
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

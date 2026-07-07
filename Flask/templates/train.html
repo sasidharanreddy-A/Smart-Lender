@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training — Smart Lender</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-cosmic"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+        <i class="bi bi-bank2 me-1"></i> Smart Lender
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('index') }}">Predict</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('eda') }}">EDA</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass active" href="{{ url_for('retrain') }}">Training</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('about') }}">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <!-- Hero -->
+    <section class="hero text-center text-white mb-5 fade-in">
+      <div class="hero-badge mx-auto">
+        <span class="hero-dot"></span> ML Training Pipeline
+      </div>
+      <h1 class="display-4 fw-bold hero-gradient-text mb-3">
+        Model Training Pipeline
+      </h1>
+      <p class="lead mb-0">
+        Train four ML models (Decision Tree, Random Forest, KNN, XGBoost) on the loan dataset
+        with SMOTE balancing and view the results in real-time.
+      </p>
+    </section>
+
+    <!-- Status indicators -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4 reveal">
+        <div class="metric-card text-center p-3">
+          <div id="statusIndicator" class="mb-2">
+            <span class="badge bg-secondary py-2 px-3">
+              <i class="bi bi-dash-circle me-1"></i> Idle
+            </span>
+          </div>
+          <p class="metric-label mb-0">Status</p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal" style="transition-delay: 0.1s;">
+        <div class="metric-card text-center p-3">
+          <div class="spinner-glass d-none mx-auto mb-2" id="trainSpinner"></div>
+          <p class="metric-label mb-0" id="statusText" style="color: var(--text-muted);">Ready to train</p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal" style="transition-delay: 0.2s;">
+        <div class="metric-card text-center p-3">
+          <div class="metric-value mb-1" id="modelsTrained">0 / 4</div>
+          <p class="metric-label mb-0">Models Trained</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap reveal">
+      <button class="btn btn-gradient btn-lg px-5 py-3" id="startTrainBtn" onclick="startTraining()">
+        <i class="bi bi-play-fill me-2"></i> Start Training
+      </button>
+      <button class="btn btn-glass btn-lg px-4 py-3" onclick="clearOutput()">
+        <i class="bi bi-trash3 me-2"></i> Clear Output
+      </button>
+    </div>
+
+    <!-- Model Architecture Cards -->
+    <div class="row g-3 mb-4 reveal">
+      <div class="col-md-6 col-lg-3">
+        <div class="model-card h-100">
+          <div class="model-icon">
+            <i class="bi bi-tree-fill" style="color: #34d399;"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-1" style="font-size: 0.95rem;">Decision Tree</h5>
+          <p class="mb-0" style="color: var(--text-muted); font-size: 0.75rem;">max_depth=6, min_samples_split=20</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="model-card h-100">
+          <div class="model-icon">
+            <i class="bi bi-diagram-3-fill" style="color: #22d3ee;"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-1" style="font-size: 0.95rem;">Random Forest</h5>
+          <p class="mb-0" style="color: var(--text-muted); font-size: 0.75rem;">300 trees, max_depth=10</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="model-card h-100">
+          <div class="model-icon">
+            <i class="bi bi-grid-3x3-gap-fill" style="color: #fbbf24;"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-1" style="font-size: 0.95rem;">KNN</h5>
+          <p class="mb-0" style="color: var(--text-muted); font-size: 0.75rem;">k=9, manhattan distance</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="model-card h-100">
+          <div class="model-icon">
+            <i class="bi bi-lightning-charge-fill" style="color: #fb7185;"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-1" style="font-size: 0.95rem;">XGBoost</h5>
+          <p class="mb-0" style="color: var(--text-muted); font-size: 0.75rem;">300 estimators, lr=0.05</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log output -->
+    <div class="card shadow-lg reveal">
+      <div class="card-header-gradient text-white d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(6,182,212,0.15); display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-terminal" style="color: #22d3ee;"></i>
+          </div>
+          <h3 class="h6 mb-0 fw-bold">Training Log</h3>
+        </div>
+        <span class="badge badge-teal" id="lineCount">0 lines</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="log-output" id="logOutput" style="border: none; border-radius: 0; max-height: 550px;">
+          <span class="log-info">[INFO]</span> Click <strong>"Start Training"</strong> to run the full ML pipeline.
+          The script will load data, preprocess, apply SMOTE, train 4 models,
+          and display a comparison table.
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center text-white-50 small mt-5 pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+      Smart Lender &middot; Training pipeline with SMOTE &middot; Best model saved as best_model.pkl
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    let pollingInterval = null;
+    let lastOutputLength = 0;
+
+    function startTraining() {
+      const btn = document.getElementById('startTrainBtn');
+      const spinner = document.getElementById('trainSpinner');
+      const statusIndicator = document.getElementById('statusIndicator');
+      const logOutput = document.getElementById('logOutput');
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Training...';
+      spinner.classList.remove('d-none');
+
+      statusIndicator.innerHTML = '<span class="badge py-2 px-3" style="background:var(--amber);"><i class="bi bi-arrow-repeat me-1"></i> Training</span>';
+      document.getElementById('statusText').textContent = 'Training in progress...';
+
+      logOutput.innerHTML = '<span class="log-info">[INFO]</span> Initializing training pipeline...\n';
+
+      fetch('{{ url_for("retrain") }}', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'error') {
+          logOutput.innerHTML += `<span class="log-error">[ERROR]</span> ${data.message}\n`;
+          resetUI();
+        }
+      })
+      .catch(err => {
+        logOutput.innerHTML += `<span class="log-error">[ERROR]</span> Network error: ${err}\n`;
+        resetUI();
+      });
+
+      if (pollingInterval) clearInterval(pollingInterval);
+      pollingInterval = setInterval(pollOutput, 500);
+    }
+
+    function pollOutput() {
+      fetch('{{ url_for("retrain_status") }}')
+        .then(response => response.json())
+        .then(data => {
+          const logOutput = document.getElementById('logOutput');
+          const newOutput = data.output.slice(lastOutputLength);
+
+          if (newOutput.length > 0) {
+            newOutput.forEach(line => {
+              const formattedLine = formatLogLine(line);
+              logOutput.innerHTML += formattedLine + '\n';
+            });
+            logOutput.scrollTop = logOutput.scrollHeight;
+            lastOutputLength = data.output.length;
+            document.getElementById('lineCount').textContent = data.output.length + ' lines';
+
+            const trainedCount = data.output.filter(l => l.includes('train_acc=')).length;
+            document.getElementById('modelsTrained').textContent = `${trainedCount} / 4`;
+          }
+
+          if (!data.running) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+            resetUI();
+
+            const lastLines = data.output.slice(-5).join(' ').toLowerCase();
+            if (lastLines.includes('done') || lastLines.includes('saved')) {
+              document.getElementById('statusIndicator').innerHTML =
+                '<span class="badge py-2 px-3" style="background:var(--emerald);"><i class="bi bi-check-circle me-1"></i> Completed</span>';
+              document.getElementById('statusText').textContent = 'Training completed successfully!';
+            } else if (lastLines.includes('error') || lastLines.includes('fail')) {
+              document.getElementById('statusIndicator').innerHTML =
+                '<span class="badge py-2 px-3" style="background:var(--coral);"><i class="bi bi-exclamation-circle me-1"></i> Failed</span>';
+              document.getElementById('statusText').textContent = 'Training failed. Check log for details.';
+            }
+          }
+        })
+        .catch(err => console.error('Poll error:', err));
+    }
+
+    function formatLogLine(line) {
+      if (line.startsWith('[ERROR]') || line.toLowerCase().includes('error'))
+        return `<span class="log-error">${escapeHtml(line)}</span>`;
+      if (line.startsWith('[WARN]') || line.toLowerCase().includes('warn'))
+        return `<span class="log-warn">${escapeHtml(line)}</span>`;
+      if (line.includes('Done') || line.includes('Saved') || line.includes('completed successfully'))
+        return `<span class="log-success">${escapeHtml(line)}</span>`;
+      if (line.startsWith('===') || line.startsWith('---'))
+        return `<span class="log-info">${escapeHtml(line)}</span>`;
+      if (line.match(/^\s+[A-Za-z]/) && line.includes('train_acc='))
+        return `<span class="log-success">${escapeHtml(line)}</span>`;
+      return escapeHtml(line);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function resetUI() {
+      const btn = document.getElementById('startTrainBtn');
+      const spinner = document.getElementById('trainSpinner');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-play-fill me-2"></i> Start Training';
+      spinner.classList.add('d-none');
+    }
+
+    function clearOutput() {
+      document.getElementById('logOutput').innerHTML =
+        '<span class="log-info">[INFO]</span> Output cleared. Click "Start Training" to run again.\n';
+      document.getElementById('lineCount').textContent = '0 lines';
+      document.getElementById('modelsTrained').textContent = '0 / 4';
+      document.getElementById('statusIndicator').innerHTML =
+        '<span class="badge bg-secondary py-2 px-3"><i class="bi bi-dash-circle me-1"></i> Idle</span>';
+      document.getElementById('statusText').textContent = 'Ready to train';
+      lastOutputLength = 0;
+    }
+  </script>
+</body>
+</html>

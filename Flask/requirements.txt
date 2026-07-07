@@ -1,0 +1,6 @@
+# Flask app runtime requirements (IBM Cloud / production)
+Flask==3.0.3
+numpy>=1.26,<3.0
+pandas>=2.0,<3.0
+scikit-learn>=1.4,<2.0
+gunicorn==22.0.0

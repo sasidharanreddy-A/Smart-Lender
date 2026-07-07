@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Lender — AI-Powered Loan Approval Prediction</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body>
+  <!-- Cosmic background -->
+  <div class="bg-cosmic"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+        <i class="bi bi-bank2 me-1"></i> Smart Lender
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link nav-link-glass active" href="{{ url_for('index') }}">Predict</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('eda') }}">EDA</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('retrain') }}">Training</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('about') }}">About</a></li>
+        </ul>
+        <span class="badge badge-teal py-2 px-3">
+          <span class="hero-dot me-1"></span> v2.0 · AI Powered
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <!-- Hero Section -->
+    <section class="hero text-center text-white mb-5">
+      <div class="hero-badge mx-auto">
+        <span class="hero-dot"></span>
+        AI-Powered Credit Assessment Engine
+      </div>
+      <h1 class="display-4 fw-bold mb-3 hero-gradient-text">
+        Applicant Creditworthiness<br />Prediction
+      </h1>
+      <p class="lead mb-4">
+        An ML-powered engine that evaluates loan applicants in real time and
+        recommends approval or rejection — reducing manual review time while
+        improving lending consistency.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('eda') }}" class="btn btn-glass btn-lg px-4">
+          <i class="bi bi-bar-chart-line"></i> Explore Data
+        </a>
+        <a href="{{ url_for('retrain') }}" class="btn btn-glass btn-lg px-4">
+          <i class="bi bi-cpu"></i> Training Pipeline
+        </a>
+        <a href="{{ url_for('about') }}" class="btn btn-glass btn-lg px-4">
+          <i class="bi bi-info-circle"></i> About Project
+        </a>
+      </div>
+    </section>
+
+    <!-- Feature Cards -->
+    <div class="row g-3 mb-5">
+      <div class="col-md-4 reveal">
+        <div class="feature-card h-100">
+          <div class="icon-ring" style="background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.2); color: #22d3ee;">
+            <i class="bi bi-lightning-charge-fill"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-2">Real-time Predictions</h5>
+          <p class="text-white-50 small mb-0" style="opacity: 0.7;">
+            Get instant loan approval decisions powered by ensemble ML models trained on real-world applicant data.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal" style="transition-delay: 0.1s;">
+        <div class="feature-card h-100">
+          <div class="icon-ring" style="background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.2); color: #a78bfa;">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-2">Confidence Scoring</h5>
+          <p class="text-white-50 small mb-0" style="opacity: 0.7;">
+            Each prediction includes an approval probability and confidence score for informed decision-making.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 reveal" style="transition-delay: 0.2s;">
+        <div class="feature-card h-100">
+          <div class="icon-ring" style="background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); color: #fbbf24;">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <h5 class="text-white fw-bold mb-2">Data-Driven Insights</h5>
+          <p class="text-white-50 small mb-0" style="opacity: 0.7;">
+            Built on comprehensive EDA — uncovering patterns across 614 applicant records with 12 features.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-glass fade-in mb-4" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            <strong>Please fix the following:</strong>
+          </div>
+          <ul class="mb-0 mt-2">
+            {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Prediction Form -->
+    <div class="card shadow-lg animated-border fade-in" style="--delay: 0.3s;">
+      <div class="card-header-gradient text-white d-flex align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(6,182,212,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <i class="bi bi-clipboard-data"></i>
+          </div>
+          <div>
+            <h2 class="h5 mb-0 fw-bold">Applicant Details</h2>
+            <small class="opacity-50">Fill in the applicant's financial profile</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form id="predictForm" method="POST" action="{{ url_for('predict') }}" novalidate>
+          <div class="row g-3">
+
+            <!-- Personal Information Group -->
+            <div class="col-12 mb-2">
+              <h6 class="text-white fw-bold mb-0" style="font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase; color: var(--teal-light) !important;">
+                <i class="bi bi-person-badge me-1"></i> Personal Information
+              </h6>
+              <hr class="glow-divider mt-2 mb-3" style="margin: 0.5rem 0 !important;" />
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-gender-ambiguous me-1" style="color: var(--teal);"></i> Gender</label>
+              <select class="form-select" name="Gender" required>
+                <option value="Male" {{ 'selected' if form and form.get('Gender')=='Male' }}>Male</option>
+                <option value="Female" {{ 'selected' if form and form.get('Gender')=='Female' }}>Female</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-people me-1" style="color: var(--violet);"></i> Married</label>
+              <select class="form-select" name="Married" required>
+                <option value="No" {{ 'selected' if form and form.get('Married')=='No' }}>No</option>
+                <option value="Yes" {{ 'selected' if form and form.get('Married')=='Yes' }}>Yes</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-person-hearts me-1" style="color: var(--amber);"></i> Dependents</label>
+              <select class="form-select" name="Dependents" required>
+                {% for d in ['0','1','2','3+'] %}
+                <option value="{{ d }}" {{ 'selected' if form and form.get('Dependents')==d }}>{{ d }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-mortarboard me-1" style="color: var(--emerald);"></i> Education</label>
+              <select class="form-select" name="Education" required>
+                <option value="Graduate" {{ 'selected' if form and form.get('Education')=='Graduate' }}>Graduate</option>
+                <option value="Not Graduate" {{ 'selected' if form and form.get('Education')=='Not Graduate' }}>Not Graduate</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-briefcase me-1" style="color: var(--coral);"></i> Self Employed</label>
+              <select class="form-select" name="Self_Employed" required>
+                <option value="No" {{ 'selected' if form and form.get('Self_Employed')=='No' }}>No</option>
+                <option value="Yes" {{ 'selected' if form and form.get('Self_Employed')=='Yes' }}>Yes</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-geo-alt me-1" style="color: var(--teal-light);"></i> Property Area</label>
+              <select class="form-select" name="Property_Area" required>
+                {% for a in ['Urban','Rural','Semiurban'] %}
+                <option value="{{ a }}" {{ 'selected' if form and form.get('Property_Area')==a }}>{{ a }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Financial Information Group -->
+            <div class="col-12 mb-2 mt-3">
+              <h6 class="text-white fw-bold mb-0" style="font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase; color: var(--amber-light) !important;">
+                <i class="bi bi-wallet2 me-1"></i> Financial Information
+              </h6>
+              <hr class="glow-divider mt-2 mb-3" style="margin: 0.5rem 0 !important;" />
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-cash-coin me-1" style="color: var(--emerald);"></i> Applicant Income</label>
+              <input type="number" min="0" step="1" class="form-control" name="ApplicantIncome"
+                     value="{{ form.get('ApplicantIncome','') if form else '' }}" placeholder="e.g. 5000" required />
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-wallet2 me-1" style="color: var(--teal);"></i> Co-applicant Income</label>
+              <input type="number" min="0" step="1" class="form-control" name="CoapplicantIncome"
+                     value="{{ form.get('CoapplicantIncome','') if form else '' }}" placeholder="e.g. 1500" required />
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <label class="form-label"><i class="bi bi-bank me-1" style="color: var(--violet);"></i> Loan Amount (in thousands)</label>
+              <input type="number" min="0" step="1" class="form-control" name="LoanAmount"
+                     value="{{ form.get('LoanAmount','') if form else '' }}" placeholder="e.g. 128" required />
+            </div>
+
+            <div class="col-md-6 col-lg-6">
+              <label class="form-label"><i class="bi bi-calendar3 me-1" style="color: var(--amber);"></i> Loan Amount Term (months)</label>
+              <select class="form-select" name="Loan_Amount_Term" required>
+                {% for t in [12,36,60,84,120,180,240,300,360,480] %}
+                <option value="{{ t }}" {{ 'selected' if form and form.get('Loan_Amount_Term')==t|string }}>{{ t }} months</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6 col-lg-6">
+              <label class="form-label"><i class="bi bi-credit-card-2-front me-1" style="color: var(--coral);"></i> Credit History</label>
+              <select class="form-select" name="Credit_History" required>
+                <option value="1" {{ 'selected' if form and form.get('Credit_History')=='1' }}>1 — Good / has credit record</option>
+                <option value="0" {{ 'selected' if form and form.get('Credit_History')=='0' }}>0 — No / poor credit record</option>
+              </select>
+            </div>
+
+          </div>
+
+          <hr class="glow-divider my-4" />
+
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="small text-white-50">
+              <i class="bi bi-shield-fill-check me-1" style="color: var(--emerald);"></i>
+              Your data is processed securely and not stored
+            </div>
+            <button type="submit" class="btn btn-gradient btn-lg px-5 py-3">
+              <i class="bi bi-stars me-2"></i> Predict Loan Approval
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer class="text-center text-white-50 small mt-5 pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+      <div class="d-flex justify-content-center gap-3 flex-wrap mb-2">
+        <span>Smart Lender v2.0</span>
+        <span>&middot;</span>
+        <span>Powered by XGBoost / Random Forest</span>
+        <span>&middot;</span>
+        <span>Trained on 614 records</span>
+      </div>
+      <p class="mb-0 opacity-50">Predictions are model-based estimates for decision support only</p>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

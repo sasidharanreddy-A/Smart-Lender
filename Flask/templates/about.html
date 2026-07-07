@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Smart Lender</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-cosmic"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+        <i class="bi bi-bank2 me-1"></i> Smart Lender
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('index') }}">Predict</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('eda') }}">EDA</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass" href="{{ url_for('retrain') }}">Training</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-glass active" href="{{ url_for('about') }}">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <!-- Hero -->
+    <section class="hero text-center text-white mb-4 fade-in">
+      <h1 class="display-5 fw-bold hero-gradient-text mb-3">
+        About Smart Lender
+      </h1>
+      <p class="lead mb-0">
+        An end-to-end machine learning web application that predicts whether a loan
+        applicant should be <strong>Approved</strong> or <strong>Rejected</strong>,
+        helping financial institutions make faster and more consistent lending decisions.
+      </p>
+    </section>
+
+    <div class="row g-4">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- How It Works -->
+        <div class="card shadow-lg reveal mb-4">
+          <div class="card-header-gradient text-white d-flex align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(6,182,212,0.15); display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-diagram-3" style="color: #22d3ee;"></i>
+              </div>
+              <h2 class="h5 mb-0 fw-bold">How It Works</h2>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="step-indicator">
+                  <span class="step-number">1</span>
+                  <span class="text-white">Applicant submits details through the prediction form</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="step-indicator">
+                  <span class="step-number">2</span>
+                  <span class="text-white">Input is preprocessed identically to the training pipeline</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="step-indicator">
+                  <span class="step-number">3</span>
+                  <span class="text-white">Ensemble model predicts outcome + approval probability</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="step-indicator">
+                  <span class="step-number">4</span>
+                  <span class="text-white">Confidence score + recommendation displayed with decision</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Comparison -->
+        <div class="card shadow-lg reveal mb-4">
+          <div class="card-header-gradient text-white d-flex align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(139,92,246,0.15); display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-bar-chart-fill" style="color: #a78bfa;"></i>
+              </div>
+              <h2 class="h5 mb-0 fw-bold">Models Compared</h2>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover-rainbow mb-0 table-glass" style="border: none; border-radius: 0;">
+                  <thead>
+                    <tr>
+                      <th style="padding: 1rem 1.2rem;">Model</th>
+                      <th style="padding: 1rem 1.2rem;">Train Accuracy</th>
+                      <th style="padding: 1rem 1.2rem;">Test Accuracy</th>
+                      <th style="padding: 1rem 1.2rem;">Test F1</th>
+                      <th style="padding: 1rem 1.2rem;">ROC-AUC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 0.8rem 1.2rem;"><i class="bi bi-tree me-2" style="color: var(--emerald);"></i> Decision Tree</td>
+                      <td style="padding: 0.8rem 1.2rem;">~82%</td>
+                      <td style="padding: 0.8rem 1.2rem;">~72%</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.780</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.801</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 0.8rem 1.2rem;"><i class="bi bi-diagram-3 me-2" style="color: var(--teal);"></i> Random Forest</td>
+                      <td style="padding: 0.8rem 1.2rem;">~92%</td>
+                      <td style="padding: 0.8rem 1.2rem;">~80%</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.864</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.783</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 0.8rem 1.2rem;"><i class="bi bi-grid-3x3 me-2" style="color: var(--amber);"></i> KNN</td>
+                      <td style="padding: 0.8rem 1.2rem;">~100%</td>
+                      <td style="padding: 0.8rem 1.2rem;">~76%</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.826</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.780</td>
+                    </tr>
+                    <tr style="background: rgba(6,182,212,0.06);">
+                      <td style="padding: 0.8rem 1.2rem; font-weight: 700;"><i class="bi bi-lightning-charge-fill me-2" style="color: var(--amber);"></i> XGBoost <span class="badge badge-amber ms-2" style="font-size: 0.7rem;">BEST</span></td>
+                      <td style="padding: 0.8rem 1.2rem; font-weight: 700;">~86%</td>
+                      <td style="padding: 0.8rem 1.2rem; font-weight: 700;">~81%</td>
+                      <td style="padding: 0.8rem 1.2rem; font-weight: 700;">0.870</td>
+                      <td style="padding: 0.8rem 1.2rem;">0.772</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            <div class="p-3 text-center" style="border-top: 1px solid var(--glass-border);">
+              <small class="text-white-50">
+                <i class="bi bi-trophy me-1" style="color: var(--amber);"></i>
+                Best model selected by <strong>test F1</strong> (robust to class imbalance) → XGBoost
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Technology Stack -->
+        <div class="card shadow-lg reveal mb-4">
+          <div class="card-header-gradient text-white d-flex align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(16,185,129,0.15); display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-cpu" style="color: #34d399;"></i>
+              </div>
+              <h2 class="h6 mb-0 fw-bold">Technology Stack</h2>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex flex-wrap gap-2">
+              <span class="tech-pill"><i class="bi bi-filetype-py" style="color: #22d3ee;"></i> Python</span>
+              <span class="tech-pill"><i class="bi bi-table" style="color: #34d399;"></i> Pandas</span>
+              <span class="tech-pill"><i class="bi bi-calculator" style="color: #a78bfa;"></i> NumPy</span>
+              <span class="tech-pill"><i class="bi bi-diagram-3" style="color: #fbbf24;"></i> Scikit-learn</span>
+              <span class="tech-pill"><i class="bi bi-lightning-charge" style="color: #fb7185;"></i> XGBoost</span>
+              <span class="tech-pill"><i class="bi bi-bar-chart" style="color: #34d399;"></i> Matplotlib</span>
+              <span class="tech-pill"><i class="bi bi-pie-chart" style="color: #22d3ee;"></i> Seaborn</span>
+              <span class="tech-pill"><i class="bi bi-server" style="color: #a78bfa;"></i> Flask</span>
+              <span class="tech-pill"><i class="bi bi-bootstrap" style="color: #7c3aed;"></i> Bootstrap 5</span>
+              <span class="tech-pill"><i class="bi bi-cloud" style="color: #fbbf24;"></i> IBM Cloud</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dataset Info -->
+        <div class="card shadow-lg reveal">
+          <div class="card-header-gradient text-white d-flex align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-database" style="color: #fbbf24;"></i>
+              </div>
+              <h2 class="h6 mb-0 fw-bold">Dataset</h2>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <p class="small text-white-50 mb-0">
+              <strong class="text-white">614</strong> loan applications with
+              <strong class="text-white">12</strong> features.
+              Target: <strong class="text-white">69%</strong> Approved /
+              <strong class="text-white">31%</strong> Rejected.
+            </p>
+            <hr class="glow-divider my-2" />
+            <p class="small text-white-50 mb-0">
+              <i class="bi bi-star-fill me-1" style="color: var(--amber);"></i>
+              Strongest predictor: <strong class="text-white">Credit_History</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-4 reveal">
+      <a href="{{ url_for('index') }}" class="btn btn-gradient btn-lg px-5 py-3">
+        <i class="bi bi-stars me-2"></i> Try a Prediction
+      </a>
+    </div>
+
+    <footer class="text-center text-white-50 small mt-5 pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+      Smart Lender &middot; Predictions are model-based estimates for decision support
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
