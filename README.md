@@ -378,6 +378,11 @@ ibmcloud cf push
 
 <br />
 
+
+## 👨‍💻 Author
+
+**A. SasidharanReddy**
+
 ## 📄 License
 
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
@@ -388,7 +393,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 <div align="center">
 
-Made with ❤️ using Python, Flask & Machine Learning
+Made  using Python, Flask & Machine Learning
 
 [⬆ Back to top](#-smart-lender)
 
